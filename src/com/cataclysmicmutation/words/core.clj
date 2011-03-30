@@ -22,16 +22,18 @@ if you have multiple copies of the letter. Specify blanks as '*' in the string."
 template using the given tile set"
   [pattern tiles]
   (let [holes (count (filter #{\*} pattern)),
-        subs (expand-blanks (all-permutations tiles holes))]
+        subs (distinct (expand-blanks (all-permutations tiles holes)))]
     (map fill-pattern (repeat pattern) subs)))
 
 (defn- all-permutations
   "generate all permutations of k elements from a set of tiles"
   [tiles k]
-  (loop [sets (combinatorics/combinations tiles k), results []]
+  (loop [sets (distinct (combinatorics/combinations tiles k)), results []]
     (if (empty? sets)
       results
-      (recur (next sets) (concat (combinatorics/permutations (first sets)) results)))))
+      (recur (next sets) (concat (filter #(not (some #{%} results))
+                                         (distinct (combinatorics/permutations (first sets))))
+                                 results)))))
 
 (defn- expand-blanks
   "takes a seq of tile sets and produces another seq of tile sets where each
