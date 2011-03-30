@@ -3,7 +3,7 @@
             [clojure.contrib.combinatorics :as combinatorics])
   (:use com.cataclysmicmutation.words.trie))
 
-(declare match-seq all-permutations fill-pattern)
+(declare match-seq all-permutations fill-pattern replace-item expand-blanks)
 
 (defn find-valid-words
   "return a seq of words that can be formed from a set of tiles and matching a
@@ -22,7 +22,7 @@ if you have multiple copies of the letter. Specify blanks as '*' in the string."
 template using the given tile set"
   [pattern tiles]
   (let [holes (count (filter #{\*} pattern)),
-        subs (all-permutations tiles holes)]
+        subs (expand-blanks (all-permutations tiles holes))]
     (map fill-pattern (repeat pattern) subs)))
 
 (defn- all-permutations
@@ -33,6 +33,19 @@ template using the given tile set"
       results
       (recur (next sets) (concat (combinatorics/permutations (first sets)) results)))))
 
+(defn- expand-blanks
+  [tiles-seq]
+  (loop [tiles-seq tiles-seq, result []]
+    (if (seq tiles-seq)
+      (let [tiles (first tiles-seq)]
+        (if (some #{\*} tiles)
+          (recur (next tiles-seq)
+                 (concat result (map (partial replace-item tiles \*)
+                                     (for [c "ABCDEFGHIJKLMNOPQRSTUVWXYZ"] c))))
+          (recur (next tiles-seq)
+                 (conj result tiles))))
+      result)))
+
 (defn- fill-pattern
   "take a pattern string with k holes and a tile string of length k and substitute
 the tiles in places of the holes"
@@ -40,3 +53,13 @@ the tiles in places of the holes"
   (if (seq tiles)
     (recur (str/replace-first pattern \* (first tiles)) (rest tiles))
     pattern))
+
+(defn- replace-item
+  "construct a new list with each occurrence of item replaced by rep"
+  [v item rep]
+  (loop [v v, res []]
+    (if (seq v)
+      (if (= (first v) item)
+        (recur (next v) (cons rep res))
+        (recur (next v) (cons (first v) res)))
+      (vec (reverse res)))))
