@@ -61,10 +61,10 @@ the tiles in places of the holes"
 
 (defn- replace-first-item
   "construct a new list with the first occurrence of item replaced by rep"
-  [v item rep]
+    [v item rep]
   (loop [v v, res []]
     (if (seq v)
       (if (= (first v) item)
-        (concat (reverse res) (vector rep) (next v))
+        (concat (reverse res) (cons rep (next v)))
         (recur (next v) (cons (first v) res)))
-      (vec (reverse res)))))
+      (reverse res))))
