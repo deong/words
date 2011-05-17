@@ -18,6 +18,20 @@
                         (add-word (:children node)
                                   (apply str (next word))))})))
 
+;; (defn add-word-fast
+;;   "add a word to an existing trie"
+;;   [trie word]
+;;   (let [keyw (keyword-char (first word)),
+;;         node (keyw trie)]
+;;     (assoc trie keyw
+;;            {:complete (or (:complete node) (nil? (next word))),
+;;             :children (if (nil? (next word))
+;;                         ;; at end of word, just return the current child node
+;;                         (:children node)
+;;                         ;; otherwise, recursively add rest of the word to the correct subtrie
+;;                         (recur (:children node)
+;;                                (apply str (next word))))})))
+
 
 (defn lookup-word
   "determine if a word is in a given trie"
@@ -44,3 +58,6 @@
   [c]
   (keyword (.toString c)))
 
+(defn load-word-file-list
+  [word-file]
+  (map str/upper-case (str/split-lines (slurp word-file))))

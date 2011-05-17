@@ -1,9 +1,10 @@
 (ns com.cataclysmicmutation.words.core
   (:require [clojure.string :as str]
             [clojure.contrib.combinatorics :as combinatorics])
-  (:use com.cataclysmicmutation.words.trie))
+  (:use com.cataclysmicmutation.words.trie)
+  (:gen-class))
 
-(declare match-seq all-permutations fill-pattern replace-first-item expand-blanks)
+(declare match-seq all-permutations fill-pattern replace-first-item expand-blanks run-loop)
 
 (defn find-valid-words
   "return a seq of words that can be formed from a set of tiles and matching a
@@ -68,3 +69,22 @@ the tiles in places of the holes"
         (concat (reverse res) (cons rep (next v)))
         (recur (next v) (cons (first v) res)))
       (reverse res))))
+
+(defn run-loop
+  "load the default dictionary and allow user to issue queries"
+  []
+  (print "loading dictionary...") (flush)
+  (let [dict (load-word-file "res/scrabble_dict.txt")]
+    (loop []
+      (print "\nEnter a pattern and a tile set: ") (flush)
+      (let [in (read-line)
+            [patt tiles] (str/split in #"\s")]
+        (println "searching for words...") (flush)
+        (doseq [word (find-valid-words dict patt tiles)]
+          (println word))
+        (flush)
+        (recur)))))
+
+(defn -main
+  [& args]
+  (run-loop))
