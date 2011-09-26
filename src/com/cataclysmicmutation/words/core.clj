@@ -10,7 +10,7 @@
   "return a seq of words that can be formed from a set of tiles and matching a
 given template pattern. The pattern is a string to be interpreted as follows:
 
-* is a wildcard that matches any valid letter, any other letter matches the
+'*' is a wildcard that matches any valid letter, any other letter matches the
 letter exactly
 
 For the tiles, specify each letter you have in your hand, repeating letters
