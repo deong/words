@@ -1,4 +1,5 @@
 .cake
+.lein-deps-sum
 pom.xml
 *.jar
 *.war

@@ -1,6 +1,6 @@
 (ns com.cataclysmicmutation.words.core
   (:require [clojure.string :as str]
-            [clojure.contrib.combinatorics :as combinatorics])
+            [clojure.math.combinatorics :as combinatorics])
   (:use com.cataclysmicmutation.words.trie)
   (:gen-class))
 
